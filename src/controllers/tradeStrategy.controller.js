@@ -11,6 +11,7 @@ const tradeStrategyController = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // getting details of stock :[shortTermMA, longTermMA, lastDayPrice]
     const stockData = await getStockData(stockName);
     if (!stockData) {
       return res.status(404).json({ message: "Stock data not found" });
@@ -20,15 +21,18 @@ const tradeStrategyController = async (req, res) => {
     let action, quantity;
 
     if (stockData[0] > stockData[1]) {
+      // if shortTermMA > longTermMA : sell
       action = "sell";
       quantity = 10;
       user.balance += price * quantity;
     } else {
+      // if shortTermMA < longTermMA : sell
       action = "buy";
       quantity = Math.floor(user.balance / price);
       user.balance -= price * quantity;
     }
 
+    // updating balance
     await User.findOneAndUpdate({ name }, { balance: user.balance });
 
     const trade = await Trade.create({
