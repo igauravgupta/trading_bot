@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { User } from "./user.model.js";
 
 const tradeSchema = new mongoose.Schema(
   {
@@ -7,7 +8,7 @@ const tradeSchema = new mongoose.Schema(
       enum: ["buy", "sell"],
       required: true,
     },
-    stockSymbol: {
+    stockName: {
       type: String,
       required: true,
     },
@@ -18,6 +19,10 @@ const tradeSchema = new mongoose.Schema(
     quantity: {
       type: Number,
       required: true,
+    },
+    owner: {
+      id: mongoose.Schema.ObjectId,
+      ref: User,
     },
   },
   { timestamps: true }
